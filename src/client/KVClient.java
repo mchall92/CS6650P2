@@ -22,9 +22,26 @@ public class KVClient {
 
     public static void main(String[] args) throws Exception {
         ClientLogger clientLogger = new ClientLogger("KVClient");
+
+        if (!(args.length == 2 || args.length == 0)) {
+            clientLogger.error("Incorrect argument");
+            return;
+        }
+        String host = "localhost";
+        int portNum = 1234;
+
+        if (args.length == 2) {
+            host = args[0];
+            try {
+                portNum = Integer.parseInt(args[1]);
+            } catch (NumberFormatException e) {
+                clientLogger.error("Incorrect argument");
+            }
+        }
+
         executorService = Executors.newFixedThreadPool(20);
         try {
-            Registry registry = LocateRegistry.getRegistry("localhost", 1);
+            Registry registry = LocateRegistry.getRegistry(host, portNum);
             kvstub = (KVInterface) registry.lookup("KV");
 
             runHardCodedCommand();

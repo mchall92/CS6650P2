@@ -13,9 +13,24 @@ public class KVServer {
 
     public static void main(String[] args) throws RemoteException, AlreadyBoundException {
         ServerLogger serverLogger = new ServerLogger("KVServer");
+
+        if (args.length > 1) {
+            serverLogger.error("Incorrect argument");
+            return;
+        }
+        int portNum = 1234;
+
+        if (args.length == 1) {
+            try {
+                portNum = Integer.parseInt(args[0]);
+            } catch (NumberFormatException e) {
+                serverLogger.error("Incorrect argument");
+            }
+        }
+
         try {
             KVServant kvServant = new KVServant();
-            KVInterface kvStub = (KVInterface) UnicastRemoteObject.exportObject(kvServant, 1);
+            KVInterface kvStub = (KVInterface) UnicastRemoteObject.exportObject(kvServant, portNum);
             Registry registry = LocateRegistry.createRegistry(1);
             registry.rebind("KV", kvStub);
             serverLogger.debug("KVServer is listening...");
