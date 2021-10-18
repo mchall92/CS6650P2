@@ -9,7 +9,6 @@ import java.sql.Timestamp;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class KVClient {
 
@@ -40,11 +39,17 @@ public class KVClient {
 
     private static void execute(String[] request) {
         if (request[0].equalsIgnoreCase("put")) {
-            clientLogger.debug(sendPutRequest(request[1], request[2]));
+            executorService.execute(() -> {
+                clientLogger.debug(sendPutRequest(request[1], request[2]));
+            });
         } else if (request[0].equalsIgnoreCase("get")) {
-            clientLogger.debug(sendGetRequest(request[1]));
+            executorService.execute(() -> {
+                clientLogger.debug(sendGetRequest(request[1]));
+            });
         } else if (request[0].equalsIgnoreCase("delete")) {
-            clientLogger.debug(sendDeleteRequest(request[1]));
+            executorService.execute(() -> {
+                clientLogger.debug(sendDeleteRequest(request[1]));
+            });
         } else {
             clientLogger.error("Incorrect request command and should not reach here!");
         }
@@ -54,9 +59,6 @@ public class KVClient {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         clientLogger.debug("Sent request- PUT " + key + " with Value: " + value + "   " + timestamp);
         try {
-            Future future = executorService.submit(() -> {
-
-            });
             timestamp = new Timestamp(System.currentTimeMillis());
             return kvstub.PUT(key, value) + "   " + timestamp;
         } catch (RemoteException e) {
