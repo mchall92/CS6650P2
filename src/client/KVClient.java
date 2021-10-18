@@ -48,6 +48,7 @@ public class KVClient {
 
             runCustomCommands();
 
+
         } catch(Exception e){
             clientLogger.error(e.getMessage());
             e.printStackTrace();
@@ -162,7 +163,7 @@ public class KVClient {
         while (true) {
 
             Scanner sc= new Scanner(System.in);
-            System.out.print("Enter an operation (PUT/GET/DELETE): ");
+            clientLogger.debug("Enter an operation (PUT/GET/DELETE): ");
             String op = sc.nextLine();
 
             String[] operation = op.split("\\s+");
@@ -181,7 +182,7 @@ public class KVClient {
                     errorOp();
                 }
             } else if (operation[0].equalsIgnoreCase("CLOSE")) {
-                break;
+                System.exit(0);
             } else {
                 errorOp();
             }
@@ -197,6 +198,6 @@ public class KVClient {
                 + "GET KEY\n"
                 + "DELETE KEY\n"
                 + "If you would like to exit, please enter: close";
-        System.out.println(msg);
+        clientLogger.debug(msg);
     }
 }
