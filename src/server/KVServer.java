@@ -31,7 +31,7 @@ public class KVServer {
         try {
             KVServant kvServant = new KVServant();
             KVInterface kvStub = (KVInterface) UnicastRemoteObject.exportObject(kvServant, portNum);
-            Registry registry = LocateRegistry.createRegistry(1);
+            Registry registry = LocateRegistry.createRegistry(portNum);
             registry.rebind("KV", kvStub);
             serverLogger.debug("KVServer is listening...");
 
